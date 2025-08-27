@@ -54,4 +54,8 @@ public class Coffee implements Serializable {
         timestamp = System.currentTimeMillis();
     }
 
+    public void setTimestamp(long time) {
+        timestamp = time;
+    }
+
 }
