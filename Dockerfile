@@ -21,10 +21,11 @@
 #    SOFTWARE.
 FROM icr.io/appcafe/open-liberty:kernel-slim-java17-openj9-ubi
 
-COPY --chown=1001:0 /src/main/liberty/config /config
+COPY --chown=1001:0 src/main/liberty/config /config
+COPY --chown=1001:0 build/wlp/usr/servers/defaultServer/jdbc/* /opt/ol/wlp/usr/servers/defaultServer/jdbc/
 
 RUN features.sh
 
-COPY --chown=1001:0 build/libs/*.war /config/apps
+COPY --chown=1001:0 build/libs/*.war /config/dropins
 
 RUN configure.sh

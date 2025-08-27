@@ -49,7 +49,7 @@ public class CoffeeDb {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Object readFromDatabase() throws SQLException{
+    public List<Coffee> readFromDatabase() throws SQLException{
         List<Coffee> result = new ArrayList<>();
 
         try (
@@ -73,7 +73,7 @@ public class CoffeeDb {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return e;
+            throw e;
         } 
 
         return result;

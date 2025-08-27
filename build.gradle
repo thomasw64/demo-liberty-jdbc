@@ -36,6 +36,11 @@ task copyJDBC(type: Copy) {
   include '*.zip'
 }
 
+liberty {
+    dev {
+        containerRunOpts = '-p 9082:9080'
+    }
+}
 
 clean.dependsOn 'libertyStop'
 deploy.dependsOn 'copyJDBC'
