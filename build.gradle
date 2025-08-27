@@ -3,11 +3,11 @@ plugins {
     id 'io.openliberty.tools.gradle.Liberty' version '3.9.4'
 }
 
-version '1.0-SNAPSHOT'
+version '0.1'
 group 'org.demo'
 
-sourceCompatibility = 11
-targetCompatibility = 11
+sourceCompatibility = 17
+targetCompatibility = 17
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
@@ -16,11 +16,26 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+  jdbcLib
+}
+
 dependencies {
     // provided dependencies
     providedCompile 'jakarta.platform:jakarta.jakartaee-api:9.1.0' 
     providedCompile 'org.eclipse.microprofile:microprofile:5.0' 
-
+    jdbcLib 'org.apache.derby:derby:10.16.1.1'
+    jdbcLib 'org.apache.derby:derbytools:10.16.1.1'
+    jdbcLib 'com.ibm.db2:jcc:12.1.2.0'
 }
 
+task copyJDBC(type: Copy) {
+  from configurations.jdbcLib
+  into 'build/wlp/usr/servers/defaultServer/jdbc'
+  include '*.jar'
+  include '*.zip'
+}
+
+
 clean.dependsOn 'libertyStop'
+deploy.dependsOn 'copyJDBC'

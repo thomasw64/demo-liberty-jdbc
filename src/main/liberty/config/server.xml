@@ -5,6 +5,7 @@
     <featureManager>
         <feature>jakartaee-9.1</feature>
         <feature>microProfile-5.0</feature>
+        <feature>jdbc-4.3</feature>
     </featureManager>
 
     <!-- This template enables security. To get the full use of all the capabilities, a keystore and user registry are required. -->
@@ -21,6 +22,7 @@
         generate an encoded password using bin/securityUtility encode and add it in the password attribute of the user element.
         Then uncomment the user element. -->
     <basicRegistry id="basic" realm="BasicRealm">
+        <user name="karl" password="wien1a"></user>
         <!--
         <user name="yourUserName" password="" />
         -->
@@ -28,7 +30,7 @@
 
     <!-- To access this server from a remote client add a host attribute to the following element, e.g. host="*" -->
     <httpEndpoint id="defaultHttpEndpoint"
-                  httpPort="9080"
+                  httpPort="9082"
                   httpsPort="9443" />
 
     <!-- Automatically expand WAR files and EAR files -->
@@ -36,4 +38,21 @@
 
     <!-- Default SSL configuration enables trust for default certificates from the Java runtime -->
     <ssl id="defaultSSLConfig" trustDefaultCerts="true" />
+
+    <library id="DB2JCCLib">
+        <fileset dir="jdbc" includes="jcc*.jar"/>
+    </library>
+
+    <library id="Derby">
+        <fileset dir="jdbc" includes="derby*.jar"/>
+    </library>
+
+    <!-- <dataSource id="db2" jndiName="jdbc/db2">
+        <jdbcDriver libraryRef="DB2JCCLib"/>
+        <properties.db2.jcc databaseName="SAMPLEDB" serverName="localhost" portNumber="50000"/>
+    </dataSource> -->
+    <dataSource id="db2" jndiName="jdbc/db2" type="javax.sql.DataSource">
+        <jdbcDriver libraryRef="Derby"/>
+        <properties.derby.embedded databaseName="memory:db2" createDatabase="create"/>
+    </dataSource>
 </server>
