@@ -47,10 +47,15 @@ public class Coffee implements Serializable {
         timestamp = System.currentTimeMillis();
     }
 
-    public Coffee(String string, String string2) {
-        name = string;
-        price = string2;
+    public Coffee(long coffeeId, String coffeName, String coffeePrice) {
+        id = coffeeId;
+        name = coffeName;
+        price = coffeePrice;
         timestamp = System.currentTimeMillis();
+    }
+
+    public void setTimestamp(long time) {
+        timestamp = time;
     }
 
 }
