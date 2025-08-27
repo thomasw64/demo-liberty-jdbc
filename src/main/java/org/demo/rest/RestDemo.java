@@ -6,10 +6,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Variant;
 import jakarta.ws.rs.core.Response.ResponseBuilder;
-import jakarta.ws.rs.core.Variant.VariantListBuilder;
-
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -28,7 +25,7 @@ public class RestDemo {
 
         Optional<String> oprice = Optional.ofNullable(price);
 
-        return new Coffee(name,oprice.orElse("$ 10.00"));
+        return new Coffee(1,name,oprice.orElse("$ 10.00"));
     }
 
     @POST
