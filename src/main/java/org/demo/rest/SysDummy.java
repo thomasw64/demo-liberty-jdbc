@@ -45,11 +45,13 @@ public class SysDummy {
 
         try (
             Connection connection = dataSource.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT 1 FROM SYSIBM.SYSDUMMY1");
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                "SELECT 1 FROM SYSIBM.SYSDUMMY1"
+            );
         ) {
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while( resultSet.next() ){
+            while (resultSet.next()) {
                 result.append("ok");
             }
             result.append("\n");

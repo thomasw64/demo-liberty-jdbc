@@ -31,30 +31,41 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
 import org.demo.model.Coffee;
+import org.demo.model.CoffeeResponse;
 
 import jakarta.annotation.Resource;
+import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.ResponseBuilder;
 
 @Path("coffee")
 public class CoffeeDb {
     @Resource(name = "jdbc/db2")
     public DataSource datasource;
 
+    private static Logger logger = Logger.getLogger("coffee");
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Coffee> readFromDatabase() throws SQLException{
-        List<Coffee> result = new ArrayList<>();
+    public CoffeeResponse readFromDatabase() throws SQLException{
+        CoffeeResponse result = new CoffeeResponse();
+        List<Coffee> resultList = new ArrayList<>();
 
         try (
             Connection connection = datasource.getConnection();
-            PreparedStatement statement = connection.prepareStatement("SELECT id,name,price,timestamp from COFFEE");
+            PreparedStatement statement = connection.prepareStatement(
+                "SELECT id,name,price,timestamp from COFFEE"
+            );
         ) {
             
             ResultSet rs = statement.executeQuery();
@@ -68,12 +79,14 @@ public class CoffeeDb {
                 Coffee coffee = new Coffee(id, name, price);
                 coffee.setTimestamp(timestamp.getTime());
 
-                result.add(coffee);
+                resultList.add(coffee);
             }
 
+            result.coffees = resultList;
         } catch (SQLException e) {
             e.printStackTrace();
-            throw e;
+            result.message = "SQL Exception encounterd on reading Table.";
+            result.exception = e;
         } 
 
         return result;
@@ -81,37 +94,44 @@ public class CoffeeDb {
 
     @Path("create-sample")
     @GET
-    public String createSampleData(){
+    @Produces(MediaType.APPLICATION_JSON)
+    public CoffeeResponse createSampleData(){
         Coffee[] sampleCoffees = {
             new Coffee(1,"Arabica", "$ 2.50"),
             new Coffee(2,"Espresso", "$ 1.00")
         };
 
-        StringBuilder result = new StringBuilder();
+        CoffeeResponse response = new CoffeeResponse();
+        StringBuilder resultString = new StringBuilder();
 
         try (
             Connection connection = datasource.getConnection();
         ) {
-            if( !doesTableExists("COFFEE",connection) ) createCoffeeTable(connection);
+            if( !doesTableExists("COFFEE",connection) ) {
+                createCoffeeTable(connection);
+            }
 
-            for (Coffee coffee : sampleCoffees) {
+            for ( Coffee coffee : sampleCoffees ) {
                 insertIntoCoffee(coffee,connection);
             }
 
-            result.append("successfuly done.\n");
+            resultString.append("successfuly done.\n");
         } catch (SQLException e) {
             e.printStackTrace();
-            result.append("Exception: %s\n".formatted(e.toString()));
+            resultString.append("Exception: %s\n".formatted(e.toString()));
+            response.exception = e;
         }
 
-        result.append("====\n");
-        return result.toString();
+        response.message = resultString.toString();
+        return response;
     }
 
 
     private void insertIntoCoffee(Coffee coffee, Connection connection) throws SQLException {
         try (
-            PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO COFFEE VALUES(?,?,?,?)");
+            PreparedStatement insertStatement = connection.prepareStatement(
+                "INSERT INTO COFFEE VALUES(?,?,?,?)"
+            );
         ) {
             insertStatement.setLong(1, coffee.id);
             insertStatement.setString(2, coffee.getName());
@@ -123,9 +143,36 @@ public class CoffeeDb {
         } 
     }
 
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response insertCoffee(Coffee coffee) throws SQLException {
+        CoffeeDb.logger.info("insertCoffee");
+        ResponseBuilder response;
+        try (
+            Connection connection = datasource.getConnection();
+        ) {
+            long freeId = getFreeId(connection);
+
+            if ( coffee.id < freeId ) coffee.id = freeId;
+
+            insertIntoCoffee(coffee, connection);
+            response = Response.ok(coffee,MediaType.APPLICATION_JSON);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = Response.serverError();
+        }
+
+        return response.build();
+    }
+
     private boolean doesTableExists(String tableName, Connection connection) throws SQLException {
         DatabaseMetaData metaData = connection.getMetaData();
-        ResultSet resultSet = metaData.getTables(null, null, tableName, null);
+        ResultSet resultSet = metaData.getTables(
+            null, 
+            null, 
+            tableName, 
+            null
+        );
 
         return resultSet.next();
     }
@@ -133,10 +180,27 @@ public class CoffeeDb {
     private void createCoffeeTable(Connection connection) throws SQLException{
         try (
             PreparedStatement createStatement = connection.prepareStatement(
-                "CREATE TABLE COFFEE (id INT NOT NULL PRIMARY KEY, name VARCHAR(128), price VARCHAR(10), timestamp DATE )"
+                """
+                CREATE TABLE COFFEE (id INT NOT NULL PRIMARY KEY, name VARCHAR(128),
+                price VARCHAR(10), timestamp DATE )"""
             );
         ) {
             createStatement.execute();  
         } 
+    }
+
+    private long getFreeId(Connection connection) throws SQLException {
+        long freeId = 0l;
+        try (
+            PreparedStatement selectMaxStatement = connection.prepareStatement(
+                "SELECT MAX(id) FROM COFFEE"
+            );
+        ) {
+            ResultSet resultSet = selectMaxStatement.executeQuery();
+            if ( resultSet.next() ){
+                freeId = resultSet.getLong(1) + 1;
+            }
+        }
+        return freeId;
     }
 }
