@@ -57,8 +57,8 @@ public class CoffeeDb {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public CoffeeResponse readFromDatabase() throws SQLException{
-        CoffeeResponse result = new CoffeeResponse();
+    public Response readFromDatabase() throws SQLException{
+        ResponseBuilder response;
         List<Coffee> resultList = new ArrayList<>();
 
         try (
@@ -82,14 +82,13 @@ public class CoffeeDb {
                 resultList.add(coffee);
             }
 
-            result.coffees = resultList;
+            response = Response.ok(resultList);
         } catch (SQLException e) {
             e.printStackTrace();
-            result.message = "SQL Exception encounterd on reading Table.";
-            result.exception = e;
+            response = Response.serverError();
         } 
 
-        return result;
+        return response.build();
     }
 
     @Path("create-sample")
