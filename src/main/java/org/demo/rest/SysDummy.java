@@ -33,6 +33,10 @@ import javax.sql.DataSource;
 import jakarta.annotation.Resource;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.ResponseBuilder;
 
 @Path("sysdummy")
 public class SysDummy {
@@ -40,8 +44,9 @@ public class SysDummy {
     private DataSource dataSource;
 
     @GET
-    public String getSysDummy() {
-        StringBuilder result = new StringBuilder();
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSysDummy() {
+        ResponseBuilder response;
 
         try (
             Connection connection = dataSource.getConnection();
@@ -51,14 +56,16 @@ public class SysDummy {
         ) {
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next()) {
-                result.append("ok");
+            if (resultSet.next()) {
+                response = Response.ok(new String("ok"));
+            } else {
+                response = Response.noContent();
             }
-            result.append("\n");
         } catch (SQLException e) {
-            result.append("Exception: %s%n".formatted(e.toString()));
+            e.printStackTrace();
+            response = Response.serverError();
         }
 
-        return result.toString();
+        return response.build();
     }
 }
