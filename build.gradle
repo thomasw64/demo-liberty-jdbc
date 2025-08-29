@@ -3,13 +3,13 @@ plugins {
     id 'io.openliberty.tools.gradle.Liberty' version '3.9.4'
 }
 
-version '0.1'
-group 'org.demo'
+version = '0.1'
+group = 'org.demo'
 
-sourceCompatibility = 17
-targetCompatibility = 17
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+    sourceCompatibility = 17
+    targetCompatibility = 17
 }
 
 repositories {
