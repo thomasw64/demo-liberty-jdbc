@@ -36,8 +36,6 @@ import java.util.logging.Logger;
 import javax.sql.DataSource;
 
 import org.demo.model.Coffee;
-import org.demo.model.CoffeeResponse;
-
 import jakarta.annotation.Resource;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
