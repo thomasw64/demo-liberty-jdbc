@@ -40,18 +40,22 @@
     <ssl id="defaultSSLConfig" trustDefaultCerts="true" />
 
     <library id="DB2JCCLib">
-        <fileset dir="jdbc" includes="jcc*.jar"/>
+        <fileset dir="jdbc" includes="jcc*.jar db2jcc_license_cusiz.jar"/>
     </library>
 
     <library id="Derby">
         <fileset dir="jdbc" includes="derby*.jar"/>
     </library>
 
-    <dataSource id="db2" jndiName="jdbc/db2old">
+    <dataSource id="db2" jndiName="jdbc/db2" type="javax.sql.DataSource">
         <jdbcDriver libraryRef="DB2JCCLib"/>
-        <properties.db2.jcc databaseName="SAMPLEDB" serverName="localhost" portNumber="50000"/>
+        <properties.db2.jcc databaseName="SAMPLEDB" 
+                            serverName="localhost" 
+                            portNumber="50000"
+                            user="user1"
+                            password="pwd1" />
     </dataSource>
-    <dataSource id="derby" jndiName="jdbc/db2" type="javax.sql.DataSource">
+    <dataSource id="derby" jndiName="jdbc/db2old" type="javax.sql.DataSource">
         <jdbcDriver libraryRef="Derby"/>
         <properties.derby.embedded databaseName="memory:db2" createDatabase="create"/>
     </dataSource>
