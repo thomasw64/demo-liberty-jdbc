@@ -95,13 +95,13 @@ public class CoffeeDb {
     @Path("create-sample")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public CoffeeResponse createSampleData(){
+    public Response createSampleData(){
         Coffee[] sampleCoffees = {
             new Coffee(1,"Arabica", "$ 2.50"),
             new Coffee(2,"Espresso", "$ 1.00")
         };
 
-        CoffeeResponse response = new CoffeeResponse();
+        ResponseBuilder response;
         StringBuilder resultString = new StringBuilder();
 
         try (
@@ -115,15 +115,14 @@ public class CoffeeDb {
                 insertIntoCoffee(coffee,connection);
             }
 
-            resultString.append("successfuly done.\n");
+            response = Response.ok(sampleCoffees);
         } catch (SQLException e) {
             e.printStackTrace();
             resultString.append("Exception: %s\n".formatted(e.toString()));
-            response.exception = e;
+            response = Response.serverError();
         }
 
-        response.message = resultString.toString();
-        return response;
+        return response.build();
     }
 
 
