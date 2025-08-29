@@ -99,7 +99,6 @@ public class CoffeeDb {
         };
 
         ResponseBuilder response;
-        StringBuilder resultString = new StringBuilder();
 
         try (
             Connection connection = datasource.getConnection();
@@ -115,7 +114,6 @@ public class CoffeeDb {
             response = Response.ok(sampleCoffees);
         } catch (SQLException e) {
             e.printStackTrace();
-            resultString.append("Exception: %s\n".formatted(e.toString()));
             response = Response.serverError();
         }
 
