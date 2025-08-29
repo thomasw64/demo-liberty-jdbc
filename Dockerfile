@@ -19,10 +19,12 @@
 #    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 #    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #    SOFTWARE.
-FROM icr.io/appcafe/open-liberty:kernel-slim-java17-openj9-ubi
+# FROM icr.io/appcafe/open-liberty:kernel-slim-java17-openj9-ubi
+FROM icr.io/appcafe/websphere-liberty:kernel-java17-openj9-ubi
 
 COPY --chown=1001:0 src/main/liberty/config /config
-COPY --chown=1001:0 build/wlp/usr/servers/defaultServer/jdbc/* /opt/ol/wlp/usr/servers/defaultServer/jdbc/
+# COPY --chown=1001:0 build/wlp/usr/servers/defaultServer/jdbc/* /opt/ol/wlp/usr/servers/defaultServer/jdbc/
+COPY --chown=1001:0 build/wlp/usr/servers/defaultServer/jdbc/* /opt/ibm/wlp/usr/servers/defaultServer/jdbc/
 
 RUN features.sh
 
