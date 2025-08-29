@@ -10,6 +10,12 @@ A JDBC example with liberty.
 5. run `docker build -t name:latest .`
 6. run the image
 
+# Alternative
+
+Copy the `jdbc-demo-0.1.war` from the release to `build/libs`
+
+Also copy the Db2 JCC-4 drivers and the license file into `build/wlp/usr/servers/defaultServer/jdbc/`
+
 ## Download the JDBC Drivers
 
 from here (https://www.ibm.com/support/fixcentral/swg/selectFixes?parent=ibm~Information%2BManagement&product=ibm/Information+Management/IBM+Data+Server+Client+Packages&release=12.1&platform=All&function=fixId&fixids=*FP000*&includeSupersedes=0&source=fc) and store in `lib`.
