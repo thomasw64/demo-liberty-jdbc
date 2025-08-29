@@ -14,7 +14,7 @@ A JDBC example with liberty.
 
 Copy the `jdbc-demo-0.1.war` from the release to `build/libs`
 
-Also copy the Db2 JCC drivers into `build/wlp/usr/servers/defaultServer/jdbc/`
+Also copy the Db2 JCC-4 drivers and the license file into `build/wlp/usr/servers/defaultServer/jdbc/`
 
 ## Download the JDBC Drivers
 
