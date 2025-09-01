@@ -34,6 +34,7 @@ WORKDIR /home/project/
 RUN git clone https://github.com/thomasw64/demo-liberty-jdbc.git
 WORKDIR demo-liberty-jdbc
 
+RUN ./gradlew init
 RUN ./gradlew war
 RUN ./gradlew deploy
 
