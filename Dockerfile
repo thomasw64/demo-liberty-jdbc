@@ -19,15 +19,28 @@
 #    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 #    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #    SOFTWARE.
-# FROM icr.io/appcafe/open-liberty:kernel-slim-java17-openj9-ubi
-FROM icr.io/appcafe/websphere-liberty:kernel-java17-openj9-ubi
+
+#############
+# build image
+FROM localhost/gradle:9.0.0 AS build
+
+RUN set -o errexit ; \
+    rm .gradle ; \
+    git clone https://github.com/thomasw64/demo-liberty-jdbc.git .
+
+RUN set -o errexit ; \
+    ln --symbolic /home/gradle/.gradle .gradle ; \
+    echo "org.gradle.daemon=false" >> .gradle/gradle.properties ; \
+    gradle war ; \
+    gradle copyJDBC ;
+
+###############
+# runtime image
+FROM icr.io/appcafe/websphere-liberty:kernel-java17-openj9-ubi-minimal
 
 COPY --chown=1001:0 src/main/liberty/config /config
-# COPY --chown=1001:0 build/wlp/usr/servers/defaultServer/jdbc/* /opt/ol/wlp/usr/servers/defaultServer/jdbc/
-COPY --chown=1001:0 build/wlp/usr/servers/defaultServer/jdbc/* /opt/ibm/wlp/usr/servers/defaultServer/jdbc/
-
+COPY --chown=1001:0 --from=build /project/build/wlp/usr/servers/defaultServer/jdbc/* /opt/ibm/wlp/usr/servers/defaultServer/jdbc/
 RUN features.sh
 
-COPY --chown=1001:0 build/libs/*.war /config/dropins
-
+COPY --chown=1001:0 --from=build /project/build/libs/*.war /config/dropins
 RUN configure.sh

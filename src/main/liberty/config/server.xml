@@ -30,7 +30,8 @@
 
     <!-- To access this server from a remote client add a host attribute to the following element, e.g. host="*" -->
     <httpEndpoint id="defaultHttpEndpoint"
-                  httpPort="9082"
+                  host="*"
+                  httpPort="9080"
                   httpsPort="9443" />
 
     <!-- Automatically expand WAR files and EAR files -->
@@ -47,7 +48,7 @@
         <fileset dir="jdbc" includes="derby*.jar"/>
     </library>
 
-    <dataSource id="db2" jndiName="jdbc/db2" type="javax.sql.DataSource">
+    <dataSource id="db2" jndiName="jdbc/db2old" type="javax.sql.DataSource">
         <jdbcDriver libraryRef="DB2JCCLib"/>
         <properties.db2.jcc databaseName="SAMPLEDB" 
                             serverName="localhost" 
@@ -55,7 +56,7 @@
                             user="user1"
                             password="pwd1" />
     </dataSource>
-    <dataSource id="derby" jndiName="jdbc/db2old" type="javax.sql.DataSource">
+    <dataSource id="derby" jndiName="jdbc/db2" type="javax.sql.DataSource">
         <jdbcDriver libraryRef="Derby"/>
         <properties.derby.embedded databaseName="memory:db2" createDatabase="create"/>
     </dataSource>

@@ -1,0 +1,11 @@
+.gradle/
+.vscode/
+build/
+gradle/
+lib/
+gradlew
+gradlew.bat
+Dockerfile*
+.git/
+.git*
+.docker*

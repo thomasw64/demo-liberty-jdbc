@@ -30,15 +30,15 @@ dependencies {
 }
 
 task copyJDBC(type: Copy) {
-  from configurations.jdbcLib
-  into 'build/wlp/usr/servers/defaultServer/jdbc'
-  include '*.jar'
-  include '*.zip'
+    from configurations.jdbcLib
+    into 'build/wlp/usr/servers/defaultServer/jdbc'
+    include '*.jar'
+    include '*.zip'
 }
 
 liberty {
     dev {
-        containerRunOpts = '-p 9082:9080'
+        containerRunOpts = '-p 9080:9080'
     }
 }
 
