@@ -29,6 +29,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -72,7 +73,7 @@ public class CoffeeDb {
                 long id = rs.getLong("id");
                 String name = rs.getString("name");
                 String price = rs.getString("price");
-                Date timestamp = rs.getDate("timestamp");
+                Timestamp timestamp = rs.getTimestamp("timestamp");
                 
                 Coffee coffee = new Coffee(id, name, price);
                 coffee.setTimestamp(timestamp.getTime());
@@ -130,7 +131,7 @@ public class CoffeeDb {
             insertStatement.setLong(1, coffee.id);
             insertStatement.setString(2, coffee.getName());
             insertStatement.setString(3, coffee.getPrice());
-            insertStatement.setDate(4, new Date(coffee.getTimestamp()));
+            insertStatement.setTimestamp(4, new Timestamp(coffee.getTimestamp()));
 
             insertStatement.executeUpdate();
             
@@ -176,7 +177,7 @@ public class CoffeeDb {
             PreparedStatement createStatement = connection.prepareStatement(
                 """
                 CREATE TABLE COFFEE (id INT NOT NULL PRIMARY KEY, name VARCHAR(128),
-                price VARCHAR(10), timestamp DATE )"""
+                price VARCHAR(10), timestamp TIMESTAMP )"""
             );
         ) {
             createStatement.execute();  
