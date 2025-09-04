@@ -25,7 +25,6 @@ SOFTWARE.
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,6 +36,7 @@ import java.util.logging.Logger;
 import javax.sql.DataSource;
 
 import org.demo.model.Coffee;
+
 import jakarta.annotation.Resource;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
