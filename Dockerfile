@@ -19,17 +19,23 @@
 #    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 #    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #    SOFTWARE.
+
+#############
+# build image
 FROM localhost/gradle:9.0.0 AS build
 
-RUN git clone https://github.com/thomasw64/demo-liberty-jdbc.git .
-# COPY --chown=1001:0 . .
+RUN set -o errexit ; \
+    rm .gradle ; \
+    git clone https://github.com/thomasw64/demo-liberty-jdbc.git .
 
-RUN mkdir -p .gradle ; \
+RUN set -o errexit ; \
+    ln --symbolic /home/gradle/.gradle .gradle ; \
     echo "org.gradle.daemon=false" >> .gradle/gradle.properties ; \
     gradle war ; \
     gradle copyJDBC ;
 
-#############
+###############
+# runtime image
 FROM icr.io/appcafe/websphere-liberty:kernel-java17-openj9-ubi-minimal
 
 COPY --chown=1001:0 src/main/liberty/config /config
