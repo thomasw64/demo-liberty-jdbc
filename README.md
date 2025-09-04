@@ -9,6 +9,10 @@ A JDBC example with liberty.
 ```
 podman build -t demo-liberty-jdbc:latest https://github.com/thomasw64/demo-liberty-jdbc.git
 ```
+3. Run the container:
+```
+podman run -it --rm -p 9080:9080 localhost/demo-liberty-jdbc:latest
+```
 
 ## Alternative Setup
 
