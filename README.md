@@ -4,9 +4,11 @@ A JDBC example with liberty.
 
 ## Build the container
 
-1. Get `gradle:9.0.0` container from (https://github.com/thomasw64/gradle-container)
-2. build the gradle container
-3. build this container
+1. Build and get the [gradle-container](https://github.com/thomasw64/gradle-container). See the instructions there.
+2. Build this container:
+```
+podman build -t demo-liberty-jdbc:latest https://github.com/thomasw64/demo-liberty-jdbc.git
+```
 
 ## Alternative Setup
 
