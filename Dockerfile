@@ -22,7 +22,7 @@
 
 #############
 # build image
-FROM localhost/gradle:9.0.0 AS build
+FROM quay.io/thomasw/gradle:8.6 AS build
 
 RUN set -o errexit ; \
     rm .gradle ; \
@@ -36,7 +36,7 @@ RUN set -o errexit ; \
 
 ###############
 # runtime image
-FROM icr.io/appcafe/websphere-liberty:kernel-java17-openj9-ubi-minimal
+FROM icr.io/appcafe/websphere-liberty:kernel-java21-openj9-ubi-minimal
 
 COPY --chown=1001:0 src/main/liberty/config /config
 COPY --chown=1001:0 --from=build /project/build/wlp/usr/servers/defaultServer/jdbc/* /opt/ibm/wlp/usr/servers/defaultServer/jdbc/
